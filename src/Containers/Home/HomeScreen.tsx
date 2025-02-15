@@ -4,22 +4,17 @@ import UserProfileHeader from '../../components/UserProfileHeader';
 import AiViewerRadioButton from '../../components/AiViewerRadioButton';
 import AfnanDropdown, {data} from '../../components/PathologyDropDown';
 import PathologyDropdown from '../../components/PathologyDropDown';
+import AiViewerDropdown from '../../components/AiViewerDropDown';
 
 const HomeScreen = () => {
- 
   return (
     <SafeAreaView style={styles.container}>
       <View>
         <UserProfileHeader />
-
         <View style={styles.dropDownRadioAiViewerContainer}>
-          <View style={styles.dropdownWrapper}>
-            <PathologyDropdown style={styles.customDropdownStyle} />
-          </View>
-
-          <View style={styles.radioButtonWrapper}>
-            <AiViewerRadioButton style={styles.radioButtonContainer} />
-          </View>
+          <PathologyDropdown style={styles.customDropdownStyle} />
+          {/* <AiViewerRadioButton style={styles.radioButtonContainer} /> */}
+          <AiViewerDropdown style={styles.radioButtonContainer} />
         </View>
       </View>
     </SafeAreaView>
@@ -40,9 +35,13 @@ const styles = StyleSheet.create({
   },
   customDropdownStyle: {
     width: '100%',
+    flex: 6,
   },
   radioButtonContainer: {
     width: '100%',
+    flex: 4,
+    alignItems: 'center',
+    marginLeft: 2,
   },
   modalContainer: {
     flex: 1,
