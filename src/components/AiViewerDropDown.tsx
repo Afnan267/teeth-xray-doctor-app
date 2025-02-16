@@ -68,37 +68,22 @@ const AiViewerDropdown: React.FC<NewCustomDropdownProps> = ({style}) => {
 
   return (
     <View style={style}>
-      {/* Selected Item Container */}
-      {/* <SelectedItemContainer
-        selectedItem={selectedItem}
+      <AiViewerRadioButton
+        style={styles.radioButtonContainer}
         onPress={() => setDropdownVisible(!dropdownVisible)}
-      /> */}
-
-      <AiViewerRadioButton style={styles.radioButtonContainer} />
+      />
 
       {/* Dropdown List */}
       {dropdownVisible && (
-        <DropdownList
-          data={sectionedData}
-          selectedItem={selectedItem}
-          onSelect={handleSelect}
-        />
-      )}
+        <View style={StyleSheet.absoluteFillObject}>
+          <DropdownList
+            data={sectionedData}
+            selectedItem={selectedItem}
+            onSelect={handleSelect}
+          />
+        </View>
+       )}
     </View>
-  );
-};
-/** Selected Item Container Component */
-const SelectedItemContainer: React.FC<{
-  selectedItem: DropdownItemType | null;
-  onPress: () => void;
-}> = ({selectedItem, onPress}) => {
-  return (
-    <TouchableOpacity activeOpacity={0.8} onPress={onPress}>
-      <DropDownDisplayTitle
-        title={selectedItem ? selectedItem.label : ''}
-        textStyle={styles.selectedText}
-      />
-    </TouchableOpacity>
   );
 };
 
@@ -110,7 +95,7 @@ const DropdownList: React.FC<{
   onSelect: (item: DropdownItemType) => void;
 }> = ({data, selectedItem, onSelect}) => {
   return (
-    <View style={[styles.dropdown, {width: SCREEN_WIDTH - 30}]}>
+    <View style={[styles.dropdown, {width: SCREEN_WIDTH}]}>
       <SectionList
         sections={data}
         keyExtractor={item => item.id}
@@ -164,8 +149,10 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     position: 'absolute',
-    top: 60,
-    paddingHorizontal: 12,
+    top: 60, // Adjust as needed
+    left: 0, // Ensure it starts from the left edge of the screen
+    right: 0, // Ensure it extends to the right edge
+    width: SCREEN_WIDTH, // Force full screen width
     backgroundColor: '#F9F9FF',
     borderRadius: 17,
     shadowColor: '#000',
@@ -174,13 +161,26 @@ const styles = StyleSheet.create({
     shadowRadius: 1.84,
     elevation: 5,
     paddingVertical: 8,
-    zIndex: 1000,
+    paddingHorizontal: 12,
   },
   radioButtonContainer: {
     width: '100%',
     flex: 4,
     alignItems: 'center',
     marginLeft: 2,
+  },
+  aiViewerDetail: {
+    flex: 1,
+    height: 200,
+    backgroundColor: '#F9F9FF',
+    borderRadius: 17,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 1},
+    shadowOpacity: 0.1,
+    shadowRadius: 1.84,
+    elevation: 5,
+    marginHorizontal: 22,
+    marginTop: 6,
   },
 });
 

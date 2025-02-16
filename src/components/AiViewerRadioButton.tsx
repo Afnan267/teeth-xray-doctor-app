@@ -10,44 +10,35 @@ import {
 import React, {useState} from 'react';
 
 interface AiViewerRadioButtonProps {
-  style?: StyleProp<ViewStyle>; // ✅ Correct typing for style
+  style?: StyleProp<ViewStyle>;
+  onPress: () => void;
 }
 
-const AiViewerRadioButton: React.FC<AiViewerRadioButtonProps> = ({style}) => {
+const AiViewerRadioButton: React.FC<AiViewerRadioButtonProps> = ({
+  style,
+  onPress,
+}) => {
   const [isEnabled, setIsEnabled] = useState(false);
-  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
-
   const handleToggleSwitch = () => {
-    toggleSwitch
+    setIsEnabled(previousState => !previousState);
+    onPress();
   };
 
   return (
     <TouchableOpacity
       activeOpacity={0.8}
-      onPress={toggleSwitch}
+      onPress={handleToggleSwitch}
       style={[styles.AiViewerRadioButtonStyle, style]}>
       <Text>Ai Viewer</Text>
       <Switch
         trackColor={{false: '#767577', true: '#178CF7'}}
         thumbColor={isEnabled ? '#fff' : '#f4f3f4'}
         ios_backgroundColor="#3e3e3e"
-        onValueChange={toggleSwitch}
+        onValueChange={handleToggleSwitch}
         value={isEnabled}
         style={styles.SwitchStyle}
       />
     </TouchableOpacity>
-
-    // <View style={[styles.AiViewerRadioButtonStyle, style]}>
-    //   <Text>Ai Viewer</Text>
-    //   <Switch
-    //     trackColor={{false: '#767577', true: '#178CF7'}}
-    //     thumbColor={isEnabled ? '#fff' : '#f4f3f4'}
-    //     ios_backgroundColor="#3e3e3e"
-    //     onValueChange={toggleSwitch}
-    //     value={isEnabled}
-    //     style={styles.SwitchStyle}
-    //   />
-    // </View>
   );
 };
 
