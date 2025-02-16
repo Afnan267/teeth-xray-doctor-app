@@ -9,21 +9,35 @@ import AfnanAiViewerRadioButton from '../../components/AfnanAiViewerRadioButton'
 
 const HomeScreen = () => {
   const [aiViewerVisible, setAiViewerVisible] = useState(false);
+  const [dropdownVisible, setDropdownVisible] = useState(false);
+
+  const toggleAiViewer = () => {
+    setAiViewerVisible(!aiViewerVisible);
+    setDropdownVisible(false); // Close dropdown when AI Viewer opens
+  };
+
+  const toggleDropdown = () => {
+    setDropdownVisible(!dropdownVisible);
+    setAiViewerVisible(false); // Close AI Viewer when Dropdown opens
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={{flex: 1}}>
         <UserProfileHeader />
         <View style={styles.dropDownRadioAiViewerContainer}>
-          <PathologyDropdown style={styles.customDropdownStyle} />
+          <PathologyDropdown
+            style={styles.customDropdownStyle}
+            dropdownVisible={dropdownVisible}
+            toggleDropdown={toggleDropdown}
+          />
 
           <AfnanAiViewerRadioButton
             style={styles.radioButtonContainer}
-            onPress={() => setAiViewerVisible(!aiViewerVisible)}
-          />
+            aiViewerVisible = {aiViewerVisible}
+             onPress={toggleAiViewer}
 
-          {/* <AiViewerRadioButton style={styles.radioButtonContainer} /> */}
-          {/* <AiViewerDropdown style={styles.radioButtonContainer} /> */}
+          />
         </View>
 
         {aiViewerVisible && (

@@ -10,7 +10,7 @@ import {
   Dimensions,
   SectionList,
 } from 'react-native';
- import DropDownDisplayTitle from './DropDownDisplayTitle';
+import DropDownDisplayTitle from './DropDownDisplayTitle';
 import DropDownItem from './DropDownItem';
 
 export const data = [
@@ -24,22 +24,22 @@ export const sectionedData = [
   {
     title: 'Pathology',
     data: [
-      {label: 'Caries', id: '1', color : '#FFABF9'},
-      {label: 'Calculus', id: '2', color : '#66DDAD'},
-      {label: 'Notable Margin', id: '3', color : '#DEB2FF'},
-      {label: 'Bone loss', id: '4', color : '#ffffff'},
-      {label: 'Periapical radiolucency', id: '5', color : '#ffffff'},
-      {label: 'Widened PDL', id: '6', color : '#ffffff'},
+      {label: 'Caries', id: '1', color: '#FFABF9'},
+      {label: 'Calculus', id: '2', color: '#66DDAD'},
+      {label: 'Notable Margin', id: '3', color: '#DEB2FF'},
+      {label: 'Bone loss', id: '4', color: '#ffffff'},
+      {label: 'Periapical radiolucency', id: '5', color: '#ffffff'},
+      {label: 'Widened PDL', id: '6', color: '#ffffff'},
     ],
   },
   {
     title: 'Non Pathology',
     data: [
-      {label: 'Filling', id: '7', color : '#ffffff'},
-      {label: 'Crown', id: '8', color : '#ffffff'},
-      {label: 'Bridge', id: '9', color : '#ffffff'},
-      {label: 'Root Canal', id: '10', color : '#ffffff'},
-      {label: 'Implant', id: '11', color : '#ffffff'},
+      {label: 'Filling', id: '7', color: '#ffffff'},
+      {label: 'Crown', id: '8', color: '#ffffff'},
+      {label: 'Bridge', id: '9', color: '#ffffff'},
+      {label: 'Root Canal', id: '10', color: '#ffffff'},
+      {label: 'Implant', id: '11', color: '#ffffff'},
     ],
   },
 ];
@@ -47,22 +47,28 @@ export const sectionedData = [
 export type DropdownItemType = {
   id: string;
   label: string;
-  color: string
+  color: string;
 };
 
 type NewCustomDropdownProps = {
   style?: StyleProp<ViewStyle>;
+  dropdownVisible: boolean;
+  toggleDropdown: () => void;
 };
 
-const PathologyDropdown: React.FC<NewCustomDropdownProps> = ({style}) => {
+const PathologyDropdown: React.FC<NewCustomDropdownProps> = ({
+  style,
+  dropdownVisible,
+  toggleDropdown,
+}) => {
   const [selectedItem, setSelectedItem] = useState<DropdownItemType | null>(
     null,
   );
-  const [dropdownVisible, setDropdownVisible] = useState(false);
+  //  const [dropdownVisible, setDropdownVisible] = useState(false);
 
   const handleSelect = (item: DropdownItemType) => {
     setSelectedItem(item);
-    setDropdownVisible(false);
+    toggleDropdown();
   };
 
   return (
@@ -70,7 +76,8 @@ const PathologyDropdown: React.FC<NewCustomDropdownProps> = ({style}) => {
       {/* Selected Item Container */}
       <SelectedItemContainer
         selectedItem={selectedItem}
-        onPress={() => setDropdownVisible(!dropdownVisible)}
+        // onPress={() => setDropdownVisible(!dropdownVisible)}
+        onPress={toggleDropdown}
       />
 
       {/* Dropdown List */}
