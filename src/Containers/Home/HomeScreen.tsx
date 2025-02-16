@@ -6,6 +6,7 @@ import AfnanDropdown, {data} from '../../components/PathologyDropDown';
 import PathologyDropdown from '../../components/PathologyDropDown';
 import AiViewerDropdown from '../../components/AiViewerDropDown';
 import AfnanAiViewerRadioButton from '../../components/AfnanAiViewerRadioButton';
+import AiViewerDetail from '../../components/AiViewerDetail';
 
 const HomeScreen = () => {
   const [aiViewerVisible, setAiViewerVisible] = useState(false);
@@ -41,9 +42,10 @@ const HomeScreen = () => {
         </View>
 
         {aiViewerVisible && (
-          <View style={[styles.aiViewerDetail]}>
-            <Text>AFnan</Text>
-          </View>
+          // <View style={[styles.aiViewerDetail]}>
+          //   <Text>AFnan</Text>
+          // </View>
+          <AiViewerDetail style={[styles.aiViewerDetail]}/>
         )}
       </View>
     </SafeAreaView>
