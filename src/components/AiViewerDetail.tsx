@@ -6,16 +6,21 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import DropDownDisplayTitle from './DropDownDisplayTitle';
 import AiViewerLevel from './AiViewerLevel';
 import CustomSlider from './CustomSlider';
+import MyCustomSlider from './MyCustomSlider';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 type AiViewerDetailProps = {
   style?: StyleProp<ViewStyle>;
 };
 
 const AiViewerDetail: React.FC<AiViewerDetailProps> = ({style}) => {
+  const [value, setValue] = useState(50);
+  const [sliderValue, setSliderValue] = useState<number>(0);
+
   return (
     <View style={style}>
       <View style={styles.aiViewerTitleView}>
@@ -59,17 +64,37 @@ const AiViewerDetail: React.FC<AiViewerDetailProps> = ({style}) => {
         maximumTrackTintColor="#D9D9D9"
       /> */}
 
-      <CustomSlider/>
+      {/* <CustomSlider/> */}
+
+      {/* <GestureHandlerRootView style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <Text>Selected Value: {value}</Text>
+        <MyCustomSlider min={0} max={100} step={5} onValueChange={setValue} />
+      </View>
+    </GestureHandlerRootView> */}
+
+<MyCustomSlider 
+        min={0} 
+        max={100} 
+        step={1} 
+        onValueChange={(value) => setSliderValue(value)} 
+      />
+
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   sliderContainer: {
     flex: 1,
     height: 20,
     marginHorizontal: 16,
-   },
+  },
   aiViewerTitleView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -78,7 +103,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     paddingHorizontal: 16,
-     marginTop: 16,
+    marginTop: 16,
   },
   aiViewerTitleStyle: {
     fontSize: 14,
