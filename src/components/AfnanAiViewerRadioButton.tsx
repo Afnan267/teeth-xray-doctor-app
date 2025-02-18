@@ -11,31 +11,33 @@ import React, {useState} from 'react';
 
 interface AiViewerRadioButtonProps {
   style?: StyleProp<ViewStyle>;
+  aiViewerVisible: boolean;
   onPress: () => void;
 }
 
-const AiViewerRadioButton: React.FC<AiViewerRadioButtonProps> = ({
+const AfnanAiViewerRadioButton: React.FC<AiViewerRadioButtonProps> = ({
   style,
+  aiViewerVisible,
   onPress,
 }) => {
-  const [isEnabled, setIsEnabled] = useState(false);
-  const handleToggleSwitch = () => {
-    setIsEnabled(previousState => !previousState);
-    onPress();
-  };
+  // const [isEnabled, setIsEnabled] = useState(false);
+  // const handleToggleSwitch = () => {
+  //   setIsEnabled(previousState => !previousState);
+  //   onPress();
+  // };
 
   return (
     <TouchableOpacity
       activeOpacity={0.8}
-      onPress={handleToggleSwitch}
+      onPress={onPress}
       style={[styles.AiViewerRadioButtonStyle, style]}>
       <Text>Ai Viewer</Text>
       <Switch
         trackColor={{false: '#767577', true: '#178CF7'}}
-        thumbColor={isEnabled ? '#fff' : '#f4f3f4'}
+        thumbColor={aiViewerVisible ? '#fff' : '#f4f3f4'}
         ios_backgroundColor="#3e3e3e"
-        onValueChange={handleToggleSwitch}
-        value={isEnabled}
+        onValueChange={onPress}
+        value={aiViewerVisible}
         style={styles.SwitchStyle}
       />
     </TouchableOpacity>
@@ -56,4 +58,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AiViewerRadioButton;
+export default AfnanAiViewerRadioButton;

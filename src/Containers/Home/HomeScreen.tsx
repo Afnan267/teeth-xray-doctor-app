@@ -1,26 +1,43 @@
 import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
 import UserProfileHeader from '../../components/UserProfileHeader';
-import AiViewerRadioButton from '../../components/AiViewerRadioButton';
-import AfnanDropdown, {data} from '../../components/PathologyDropDown';
 import PathologyDropdown from '../../components/PathologyDropDown';
+import AfnanAiViewerRadioButton from '../../components/AfnanAiViewerRadioButton';
+import AiViewerDetail from '../../components/AiViewerDetail';
 
 const HomeScreen = () => {
- 
+  const [aiViewerVisible, setAiViewerVisible] = useState(false);
+  const [dropdownVisible, setDropdownVisible] = useState(false);
+
+  const toggleAiViewer = () => {
+    setAiViewerVisible(!aiViewerVisible);
+    setDropdownVisible(false); // Close dropdown when AI Viewer opens
+  };
+
+  const toggleDropdown = () => {
+    setDropdownVisible(!dropdownVisible);
+    setAiViewerVisible(false); // Close AI Viewer when Dropdown opens
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <View>
+      <View style={{flex: 1}}>
         <UserProfileHeader />
-
         <View style={styles.dropDownRadioAiViewerContainer}>
-          <View style={styles.dropdownWrapper}>
-            <PathologyDropdown style={styles.customDropdownStyle} />
-          </View>
+          <PathologyDropdown
+            style={styles.customDropdownStyle}
+            dropdownVisible={dropdownVisible}
+            toggleDropdown={toggleDropdown}
+          />
 
-          <View style={styles.radioButtonWrapper}>
-            <AiViewerRadioButton style={styles.radioButtonContainer} />
-          </View>
+          <AfnanAiViewerRadioButton
+            style={styles.radioButtonContainer}
+            aiViewerVisible={aiViewerVisible}
+            onPress={toggleAiViewer}
+          />
         </View>
+
+        {aiViewerVisible && <AiViewerDetail style={[styles.aiViewerDetail]} />}
       </View>
     </SafeAreaView>
   );
@@ -40,9 +57,13 @@ const styles = StyleSheet.create({
   },
   customDropdownStyle: {
     width: '100%',
+    flex: 6,
   },
   radioButtonContainer: {
     width: '100%',
+    flex: 4,
+    alignItems: 'center',
+    marginLeft: 2,
   },
   modalContainer: {
     flex: 1,
@@ -53,12 +74,24 @@ const styles = StyleSheet.create({
 
   dropdownWrapper: {
     flex: 6,
-    // marginEnd: 2,
   },
   radioButtonWrapper: {
     flex: 4,
     alignItems: 'center',
     marginLeft: 2,
+  },
+  aiViewerDetail: {
+    flex: 0,
+    backgroundColor: '#F9F9FF',
+    borderRadius: 17,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 1},
+    shadowOpacity: 0.1,
+    shadowRadius: 1.84,
+    elevation: 5,
+    marginHorizontal: 22,
+    marginTop: 6,
+    paddingBottom: 17,
   },
 });
 

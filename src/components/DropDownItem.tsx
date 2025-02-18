@@ -58,7 +58,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 12,
-     borderRadius: 9,
+    marginVertical: 4,
+    borderRadius: 9,
     justifyContent: 'space-between',
   },
   circle: {
