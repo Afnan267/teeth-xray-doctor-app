@@ -5,6 +5,7 @@ import PathologyDropdown from '../../components/PathologyDropDown';
 import AfnanAiViewerRadioButton from '../../components/AfnanAiViewerRadioButton';
 import AiViewerDetail from '../../components/AiViewerDetail';
 import ImageUploaderView from '../../components/ImageUploaderView';
+import HomeBottomContainer from '../../components/HomeBottomContainer';
 
 const HomeScreen = () => {
   const [aiViewerVisible, setAiViewerVisible] = useState(false);
@@ -38,9 +39,10 @@ const HomeScreen = () => {
           />
         </View>
         {aiViewerVisible && <AiViewerDetail style={[styles.aiViewerDetail]} />}
-        
-        <ImageUploaderView style = {styles.imageUploaderContainer}/>
 
+        <ImageUploaderView style={styles.imageUploaderContainer} />
+
+        <HomeBottomContainer style ={styles.homeBottomContainer}/>
       </View>
     </SafeAreaView>
   );
@@ -51,13 +53,20 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+  homeBottomContainer: {
+    backgroundColor: '#F5F5F5',
+    marginHorizontal: 15,
+    marginTop: 10,
+    marginBottom: 17,
+    borderRadius: 17,
+    flex: 1
+  },
   imageUploaderContainer: {
     backgroundColor: '#F9F9FF',
-      marginHorizontal: 15,
+    marginHorizontal: 15,
     marginTop: 5,
     borderRadius: 12,
     zIndex: 1,
-
   },
   dropDownRadioAiViewerContainer: {
     marginTop: 30,
