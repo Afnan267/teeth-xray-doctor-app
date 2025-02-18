@@ -4,6 +4,7 @@ import UserProfileHeader from '../../components/UserProfileHeader';
 import PathologyDropdown from '../../components/PathologyDropDown';
 import AfnanAiViewerRadioButton from '../../components/AfnanAiViewerRadioButton';
 import AiViewerDetail from '../../components/AiViewerDetail';
+import ImageUploaderView from '../../components/ImageUploaderView';
 
 const HomeScreen = () => {
   const [aiViewerVisible, setAiViewerVisible] = useState(false);
@@ -21,7 +22,7 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{flex: 1}}>
+      <View style={{flex: 1, flexDirection: 'column'}}>
         <UserProfileHeader />
         <View style={styles.dropDownRadioAiViewerContainer}>
           <PathologyDropdown
@@ -36,8 +37,10 @@ const HomeScreen = () => {
             onPress={toggleAiViewer}
           />
         </View>
-
         {aiViewerVisible && <AiViewerDetail style={[styles.aiViewerDetail]} />}
+        
+        <ImageUploaderView style = {styles.imageUploaderContainer}/>
+
       </View>
     </SafeAreaView>
   );
@@ -47,6 +50,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  imageUploaderContainer: {
+    backgroundColor: '#F9F9FF',
+      marginHorizontal: 15,
+    marginTop: 5,
+    borderRadius: 12,
+    zIndex: 1,
+
   },
   dropDownRadioAiViewerContainer: {
     marginTop: 30,
@@ -92,6 +103,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 22,
     marginTop: 6,
     paddingBottom: 17,
+    zIndex: 2,
   },
 });
 
