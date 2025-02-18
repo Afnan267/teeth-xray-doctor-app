@@ -1,8 +1,6 @@
-import React, { useRef, useState } from 'react';
-import { View, Text, StyleSheet, PanResponder, Dimensions } from 'react-native';
-import { runOnJS } from 'react-native-reanimated';
-
-const { width: screenWidth } = Dimensions.get('window');
+import React, {useRef, useState} from 'react';
+import {View, Text, StyleSheet, PanResponder, Dimensions} from 'react-native';
+import {runOnJS} from 'react-native-reanimated';
 
 interface CustomSliderProps {
   min?: number;
@@ -11,13 +9,19 @@ interface CustomSliderProps {
   onValueChange?: (value: number) => void;
 }
 
-const MyCustomSlider: React.FC<CustomSliderProps> = ({ min = 0, max = 100, step = 1, onValueChange }) => {
+const MyCustomSlider: React.FC<CustomSliderProps> = ({
+  min = 0,
+  max = 100,
+  step = 1,
+  onValueChange,
+}) => {
   const [value, setValue] = useState<number>(min);
-  const sliderWidth = screenWidth - 40;
+  const [sliderWidth, setSliderWidth] = useState<number>(200); // Default width before measurement
   const sliderRef = useRef<View | null>(null);
 
   const calculateValue = (x: number) => {
-    const newValue = Math.round(((x - 20) / sliderWidth) * (max - min) / step) * step + min;
+    const newValue =
+      Math.round((((x - 20) / sliderWidth) * (max - min)) / step) * step + min;
     return Math.min(Math.max(newValue, min), max);
   };
 
@@ -44,38 +48,64 @@ const MyCustomSlider: React.FC<CustomSliderProps> = ({ min = 0, max = 100, step 
   const sliderPosition = ((value - min) / (max - min)) * sliderWidth;
 
   return (
+
     <View style={styles.container}>
-      <View style={styles.sliderTrack} ref={sliderRef} {...panResponder.panHandlers}>
-        <View style={[styles.sliderThumb, { left: sliderPosition }]} />
-      </View>
-      <Text style={styles.valueText}>{value}</Text>
+    <View
+      style={styles.sliderTrack}
+      ref={sliderRef}
+      {...panResponder.panHandlers}
+      onLayout={(event) => setSliderWidth(event.nativeEvent.layout.width)} // ✅ Dynamically update width
+    >
+      {/* Progress track with dynamic width */}
+      <View
+        style={[
+          styles.progressTrack,
+          { width: sliderPosition }, // Dynamically update progress width
+        ]}
+      />
+      
+      {/* Thumb */}
+      <View style={[styles.sliderThumb, { left: sliderPosition-6 }]} />
     </View>
+    {/* <Text style={styles.valueText}>{value}</Text> */}
+  </View>
+
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    paddingHorizontal: 20, // Parent padding
   },
   sliderTrack: {
-    height: 4,
-    backgroundColor: '#ccc',
-    borderRadius: 2,
-    position: 'relative',
+    height: 10,
+    backgroundColor: '#D9D9D9',
+    borderRadius: 5,
+    // position: 'relative',
+    width: '100%', // Allow dynamic width
+  },
+
+  progressTrack: {
+    height: 10,
+    backgroundColor: '#007AFF', // Progress track color (blue)
+    borderRadius: 5,
+    position: 'absolute',
+    left: 0,
   },
   sliderThumb: {
-    width: 20,
-    height: 20,
+    width: 18,
+    height: 18,
     borderRadius: 10,
-    backgroundColor: '#007AFF',
+    backgroundColor: '#fff',
     position: 'absolute',
-    top: -8,
-  },
+    top: -4,
+   },
   valueText: {
     marginTop: 10,
     textAlign: 'center',
     fontSize: 16,
   },
+
 });
 
 export default MyCustomSlider;

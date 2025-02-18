@@ -1,10 +1,7 @@
 import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
 import UserProfileHeader from '../../components/UserProfileHeader';
-import AiViewerRadioButton from '../../components/AiViewerRadioButton';
-import AfnanDropdown, {data} from '../../components/PathologyDropDown';
 import PathologyDropdown from '../../components/PathologyDropDown';
-import AiViewerDropdown from '../../components/AiViewerDropDown';
 import AfnanAiViewerRadioButton from '../../components/AfnanAiViewerRadioButton';
 import AiViewerDetail from '../../components/AiViewerDetail';
 
@@ -35,18 +32,12 @@ const HomeScreen = () => {
 
           <AfnanAiViewerRadioButton
             style={styles.radioButtonContainer}
-            aiViewerVisible = {aiViewerVisible}
-             onPress={toggleAiViewer}
-
+            aiViewerVisible={aiViewerVisible}
+            onPress={toggleAiViewer}
           />
         </View>
 
-        {aiViewerVisible && (
-          // <View style={[styles.aiViewerDetail]}>
-          //   <Text>AFnan</Text>
-          // </View>
-          <AiViewerDetail style={[styles.aiViewerDetail]}/>
-        )}
+        {aiViewerVisible && <AiViewerDetail style={[styles.aiViewerDetail]} />}
       </View>
     </SafeAreaView>
   );
@@ -83,7 +74,6 @@ const styles = StyleSheet.create({
 
   dropdownWrapper: {
     flex: 6,
-    // marginEnd: 2,
   },
   radioButtonWrapper: {
     flex: 4,
@@ -92,7 +82,6 @@ const styles = StyleSheet.create({
   },
   aiViewerDetail: {
     flex: 0,
-    height: 200,
     backgroundColor: '#F9F9FF',
     borderRadius: 17,
     shadowColor: '#000',
@@ -102,6 +91,7 @@ const styles = StyleSheet.create({
     elevation: 5,
     marginHorizontal: 22,
     marginTop: 6,
+    paddingBottom: 17,
   },
 });
 
