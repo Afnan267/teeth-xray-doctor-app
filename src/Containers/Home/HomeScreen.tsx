@@ -5,6 +5,8 @@ import PathologyDropdown from '../../components/PathologyDropDown';
 import AfnanAiViewerRadioButton from '../../components/AfnanAiViewerRadioButton';
 import AiViewerDetail from '../../components/AiViewerDetail';
 import ImageUploaderView from '../../components/ImageUploaderView';
+import HomeBottomContainer from '../../components/HomeBottomContainer';
+import ChatBotModal from '../../components/modal/ChatBotModal';
 
 const HomeScreen = () => {
   const [aiViewerVisible, setAiViewerVisible] = useState(false);
@@ -18,6 +20,14 @@ const HomeScreen = () => {
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
     setAiViewerVisible(false); // Close AI Viewer when Dropdown opens
+  };
+
+  const [isChatVisible, setChatVisible] = useState(false);
+
+  const handleBottomIconClick = (selectedIcon: string) => {
+    console.log('Selected Icon:', selectedIcon);
+    // Perform actions based on the selected icon
+    if (selectedIcon === 'dentistry') setChatVisible(true);
   };
 
   return (
@@ -38,9 +48,18 @@ const HomeScreen = () => {
           />
         </View>
         {aiViewerVisible && <AiViewerDetail style={[styles.aiViewerDetail]} />}
-        
-        <ImageUploaderView style = {styles.imageUploaderContainer}/>
 
+        <ImageUploaderView style={styles.imageUploaderContainer} />
+
+        <HomeBottomContainer
+          style={styles.homeBottomContainer}
+          onBottomIconClick={handleBottomIconClick}
+        />
+
+        <ChatBotModal
+          visible={isChatVisible}
+          onClose={() => setChatVisible(false)}
+        />
       </View>
     </SafeAreaView>
   );
@@ -51,13 +70,20 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+  homeBottomContainer: {
+    backgroundColor: '#F5F5F5',
+    marginHorizontal: 15,
+    marginTop: 10,
+    marginBottom: 17,
+    borderRadius: 17,
+    flex: 1,
+  },
   imageUploaderContainer: {
     backgroundColor: '#F9F9FF',
-      marginHorizontal: 15,
+    marginHorizontal: 15,
     marginTop: 5,
     borderRadius: 12,
     zIndex: 1,
-
   },
   dropDownRadioAiViewerContainer: {
     marginTop: 30,
