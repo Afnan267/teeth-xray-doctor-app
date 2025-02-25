@@ -1,24 +1,44 @@
-import { Alert, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import {
+  Alert,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import InputBox from '../../Elements/InputBox';
 import Button from '../../Elements/Button';
 import SocialButton from '../../Elements/SocialButton';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../App';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../../App';
+import {
+  GoogleSignin,
+  isErrorWithCode,
+  isSuccessResponse,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
 
-type RegistrationProps = NativeStackScreenProps<RootStackParamList,"Registration">
+type RegistrationProps = NativeStackScreenProps<
+  RootStackParamList,
+  'Registration'
+>;
 
-
-const RegistrationScreen = ({navigation} : RegistrationProps) => {
-
+const RegistrationScreen = ({navigation}: RegistrationProps) => {
   const [text, setText] = useState('');
   const [isSelected, setIsSelected] = useState(false);
 
-  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', password: '' });
+  const [form, setForm] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+  });
   const [isAgreed, setIsAgreed] = useState(false);
 
-  const handleChange = (key : keyof typeof form, value : string) => {
-    setForm({ ...form, [key]: value });
+  const handleChange = (key: keyof typeof form, value: string) => {
+    setForm({...form, [key]: value});
   };
 
   const toggleSelection = () => {
@@ -26,13 +46,52 @@ const RegistrationScreen = ({navigation} : RegistrationProps) => {
   };
 
   const handlePress = () => {
-    navigation.navigate('Login')
+    navigation.navigate('Login');
   };
-  
+
+  const onGoogleSignPress = () => {
+    signIn()
+  };
+
+
+  const [userInfo, setUserInfo] = useState(null);
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId:
+        '13145003481-1i678fbqv5k7qap7ipd09tjje5v1vql1.apps.googleusercontent.com',
+    });
+  });
+
+  const signIn = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const response = await GoogleSignin.signIn();
+      if (isSuccessResponse(response)) {
+        setUserInfo(userInfo);
+      } else {
+        // sign in was cancelled by user
+      }
+    } catch (error) {
+      if (isErrorWithCode(error)) {
+        switch (error.code) {
+          case statusCodes.IN_PROGRESS:
+            // operation (eg. sign in) already in progress
+            break;
+          case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
+            // Android only, play services not available or outdated
+            break;
+          default:
+          // some other error happened
+        }
+      } else {
+        // an error that's not related to google sign in occurred
+      }
+    }
+  };
+
   return (
-    <View style = {styles.container}>
-      
-      <Text style = {styles.nameTitle}>Create an account</Text>
+    <View style={styles.container}>
+      <Text style={styles.nameTitle}>Create an account</Text>
 
       <View style={styles.loginContainer}>
         <Text style={styles.nameSubTitle}>Already have an account? </Text>
@@ -41,156 +100,154 @@ const RegistrationScreen = ({navigation} : RegistrationProps) => {
         </Pressable>
       </View>
 
-      <View style = {styles.InputBoxFirst}>
+      <View style={styles.InputBoxFirst}>
         <InputBox
-          placeholder='First Name'
-         value={form.firstName}
+          placeholder="First Name"
+          value={form.firstName}
           onChangeText={value => handleChange('firstName', value)}
         />
       </View>
-      <View style = {styles.InputBox}>
+      <View style={styles.InputBox}>
         <InputBox
-          placeholder='Last Name'
+          placeholder="Last Name"
           value={form.lastName}
           onChangeText={value => handleChange('lastName', value)}
         />
       </View>
-      <View style = {styles.InputBox}>
+      <View style={styles.InputBox}>
         <InputBox
-          placeholder='Email'
+          placeholder="Email"
           value={form.email}
           onChangeText={value => handleChange('email', value)}
         />
       </View>
-      <View style = {styles.InputBox}>
+      <View style={styles.InputBox}>
         <InputBox
-          placeholder='Enter your password'
+          placeholder="Enter your password"
           value={form.password}
           onChangeText={value => handleChange('password', value)}
         />
       </View>
 
       <TouchableOpacity onPress={toggleSelection} style={styles.radioContainer}>
-      <View style={[styles.radioButton, isSelected && styles.radioButtonSelected]} />
-        <Text style = {styles.termsAndConditions}>I agree to the{' '}
-          <Text style = {styles.logInTitle}>Terms & Condition</Text>
+        <View
+          style={[styles.radioButton, isSelected && styles.radioButtonSelected]}
+        />
+        <Text style={styles.termsAndConditions}>
+          I agree to the{' '}
+          <Text style={styles.logInTitle}>Terms & Condition</Text>
         </Text>
       </TouchableOpacity>
 
-      <View style = {styles.Button}>
+      <View style={styles.Button}>
         <Button
-          text='Create Account'
-          onPress={handlePress} 
-          textColor="#FFFFFF" >
-        </Button>
-      </View>
-     
-      <Text style = {styles.orText}>Or</Text>
-
-      <View style = {styles.SocialButton}>
-        <SocialButton
-          src='google'
-          onPress={handlePress} 
-          backgroundColor="#FFFFFF" >
-        </SocialButton>
-        <View style = {styles.horizontalSpace}></View>
-        <SocialButton
-          src='apple'
-          onPress={handlePress} 
-          backgroundColor="#FFFFFF" >
-        </SocialButton>
+          text="Create Account"
+          onPress={handlePress}
+          textColor="#FFFFFF"></Button>
       </View>
 
+      <Text style={styles.orText}>Or</Text>
+
+      <View style={styles.SocialButton}>
+        <SocialButton
+          src="google"
+          onPress={onGoogleSignPress}
+          backgroundColor="#FFFFFF"></SocialButton>
+        <View style={styles.horizontalSpace}></View>
+        <SocialButton
+          src="apple"
+          onPress={handlePress}
+          backgroundColor="#FFFFFF"></SocialButton>
+      </View>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   Button: {
-    marginTop:44,
+    marginTop: 44,
   },
   SocialButton: {
-    marginTop:23,
-    flexDirection: 'row',       
+    marginTop: 23,
+    flexDirection: 'row',
     justifyContent: 'space-between',
   },
   InputBoxFirst: {
-    marginTop:66,
-    },
+    marginTop: 66,
+  },
   InputBox: {
-      marginTop:10,
-    },
+    marginTop: 10,
+  },
   container: {
-        paddingHorizontal: 33,
-        flex: 1,
-        backgroundColor: '#f9f9ff',
-    },
-    loginContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',  // Keeps both texts vertically aligned
-    },
-    nameTitle: {
-        color: '#787878',
-        justifyContent: 'center',
-        fontSize: 32,
-        fontWeight: '500',
-        fontFamily: 'Poppins-Bold',
-        marginBottom: 9,
-        marginTop:109
-      },
-    nameSubTitle: {
-        color: '#787878',
-        justifyContent: 'center',
-        fontSize: 15,
-        fontWeight: '400',
-        fontFamily: 'Poppins-Regular'
-      },
-    logInTitle: {
-        color: '#178CF7',
-        fontSize: 15,
-        fontWeight: '400',
-        fontFamily: 'Poppins-Regular'
-      },
-      termsAndConditions: {
-        color: '#787878',
-        justifyContent: 'center',
-        fontSize: 15,
-        fontWeight: '400',
-        fontFamily: 'Poppins-Regular',
-        marginTop: 31
-      },
-      orText: {
-        color: '#787878',
-        fontSize: 15,
-        fontWeight: '400',
-        fontFamily: 'Poppins-Regular',
-        marginTop: 11,
-        textAlign: 'center',   
-        alignSelf: 'center',  
-      },
-      radioContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-      },
-      radioButton: {
-        height: 15,
-        width: 15,
-        borderRadius: 10,
-        borderWidth: 2,
-        borderColor: '#555',
-        marginRight: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 31
-      },
-      radioButtonSelected: {
-        backgroundColor: '#007BFF',
-        borderColor: '#007BFF',
-      },
-      horizontalSpace: {
-        width: 18
-      },
-  });
+    paddingHorizontal: 33,
+    flex: 1,
+    backgroundColor: '#f9f9ff',
+  },
+  loginContainer: {
+    flexDirection: 'row',
+    alignItems: 'center', // Keeps both texts vertically aligned
+  },
+  nameTitle: {
+    color: '#787878',
+    justifyContent: 'center',
+    fontSize: 32,
+    fontWeight: '500',
+    fontFamily: 'Poppins-Bold',
+    marginBottom: 9,
+    marginTop: 109,
+  },
+  nameSubTitle: {
+    color: '#787878',
+    justifyContent: 'center',
+    fontSize: 15,
+    fontWeight: '400',
+    fontFamily: 'Poppins-Regular',
+  },
+  logInTitle: {
+    color: '#178CF7',
+    fontSize: 15,
+    fontWeight: '400',
+    fontFamily: 'Poppins-Regular',
+  },
+  termsAndConditions: {
+    color: '#787878',
+    justifyContent: 'center',
+    fontSize: 15,
+    fontWeight: '400',
+    fontFamily: 'Poppins-Regular',
+    marginTop: 31,
+  },
+  orText: {
+    color: '#787878',
+    fontSize: 15,
+    fontWeight: '400',
+    fontFamily: 'Poppins-Regular',
+    marginTop: 11,
+    textAlign: 'center',
+    alignSelf: 'center',
+  },
+  radioContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  radioButton: {
+    height: 15,
+    width: 15,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#555',
+    marginRight: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 31,
+  },
+  radioButtonSelected: {
+    backgroundColor: '#007BFF',
+    borderColor: '#007BFF',
+  },
+  horizontalSpace: {
+    width: 18,
+  },
+});
 
-
-export default RegistrationScreen
+export default RegistrationScreen;
