@@ -68,7 +68,8 @@ const RegistrationScreen = ({navigation}: RegistrationProps) => {
       const response = await GoogleSignin.signIn();
       if (isSuccessResponse(response)) {
         setUserInfo(userInfo);
-      } else {
+        console.log("User Info:", response.data.user);
+       } else {
         // sign in was cancelled by user
       }
     } catch (error) {
