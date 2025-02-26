@@ -18,6 +18,7 @@ import {
   isErrorWithCode,
   isSuccessResponse,
   statusCodes,
+  User,
 } from '@react-native-google-signin/google-signin';
 
 type RegistrationProps = NativeStackScreenProps<
@@ -26,35 +27,87 @@ type RegistrationProps = NativeStackScreenProps<
 >;
 
 const RegistrationScreen = ({navigation}: RegistrationProps) => {
-  const [text, setText] = useState('');
-  const [isSelected, setIsSelected] = useState(false);
-
   const [form, setForm] = useState({
     firstName: '',
     lastName: '',
     email: '',
     password: '',
   });
-  const [isAgreed, setIsAgreed] = useState(false);
+
+  const [errors, setErrors] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    terms: '',
+  });
+
+  const [isSelected, setIsSelected] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (key: keyof typeof form, value: string) => {
     setForm({...form, [key]: value});
+    setErrors({...errors, [key]: ''}); // Clear error when user types
   };
 
   const toggleSelection = () => {
     setIsSelected(!isSelected);
+    setErrors({...errors, terms: ''}); // Clear error when user selects terms
+  };
+
+  const validateForm = () => {
+    let valid = true;
+    const newErrors = {
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      terms: '',
+    };
+
+    if (!form.firstName.trim()) {
+      newErrors.firstName = 'First name is required.';
+      valid = false;
+    }
+    if (!form.lastName.trim()) {
+      newErrors.lastName = 'Last name is required.';
+      valid = false;
+    }
+
+    if (!form.email.trim()) {
+      newErrors.email = 'Email is required.';
+      valid = false;
+    } else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(form.email)) {
+      newErrors.email = 'Enter a valid email.';
+      valid = false;
+    }
+    if (!form.password.trim()) {
+      newErrors.password = 'Password is required.';
+      valid = false;
+    } else if (form.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters.';
+      valid = false;
+    }
+
+    if (!isSelected) {
+      newErrors.terms = 'You must accept the Terms & Conditions.';
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
   };
 
   const handlePress = () => {
-    navigation.navigate('Login');
+    if (validateForm()) {
+      navigation.navigate('Login');
+    }
   };
 
   const onGoogleSignPress = () => {
-    signIn()
+    signIn();
   };
 
-
-  const [userInfo, setUserInfo] = useState(null);
   useEffect(() => {
     GoogleSignin.configure({
       webClientId:
@@ -67,9 +120,9 @@ const RegistrationScreen = ({navigation}: RegistrationProps) => {
       await GoogleSignin.hasPlayServices();
       const response = await GoogleSignin.signIn();
       if (isSuccessResponse(response)) {
-        setUserInfo(userInfo);
-        console.log("User Info:", response.data.user);
-       } else {
+        // setUserInfo(response.data.user);
+        console.log('User Info:', response.data.user);
+      } else {
         // sign in was cancelled by user
       }
     } catch (error) {
@@ -107,6 +160,9 @@ const RegistrationScreen = ({navigation}: RegistrationProps) => {
           value={form.firstName}
           onChangeText={value => handleChange('firstName', value)}
         />
+        {errors.firstName ? (
+          <Text style={styles.errorText}>{errors.firstName}</Text>
+        ) : null}
       </View>
       <View style={styles.InputBox}>
         <InputBox
@@ -114,6 +170,9 @@ const RegistrationScreen = ({navigation}: RegistrationProps) => {
           value={form.lastName}
           onChangeText={value => handleChange('lastName', value)}
         />
+        {errors.lastName ? (
+          <Text style={styles.errorText}>{errors.lastName}</Text>
+        ) : null}
       </View>
       <View style={styles.InputBox}>
         <InputBox
@@ -121,13 +180,22 @@ const RegistrationScreen = ({navigation}: RegistrationProps) => {
           value={form.email}
           onChangeText={value => handleChange('email', value)}
         />
+        {errors.email ? (
+          <Text style={styles.errorText}>{errors.email}</Text>
+        ) : null}
       </View>
       <View style={styles.InputBox}>
         <InputBox
           placeholder="Enter your password"
           value={form.password}
+          isPassword={true} // Pass as password field
+          onTogglePassword={() => setShowPassword(!showPassword)} // Toggle function
+          secureTextEntry={!showPassword}
           onChangeText={value => handleChange('password', value)}
         />
+        {errors.password ? (
+          <Text style={styles.errorText}>{errors.password}</Text>
+        ) : null}
       </View>
 
       <TouchableOpacity onPress={toggleSelection} style={styles.radioContainer}>
@@ -139,6 +207,9 @@ const RegistrationScreen = ({navigation}: RegistrationProps) => {
           <Text style={styles.logInTitle}>Terms & Condition</Text>
         </Text>
       </TouchableOpacity>
+      {errors.terms ? (
+        <Text style={styles.errorText}>{errors.terms}</Text>
+      ) : null}
 
       <View style={styles.Button}>
         <Button
@@ -249,6 +320,7 @@ const styles = StyleSheet.create({
   horizontalSpace: {
     width: 18,
   },
+  errorText: {color: 'red', fontSize: 13, marginTop: 4},
 });
 
 export default RegistrationScreen;

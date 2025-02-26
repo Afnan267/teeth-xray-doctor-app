@@ -15,6 +15,9 @@ export {default as AIChatIcon} from './ai_chat_icon.svg';
 export {default as SettingsIcon} from './settings.svg';
 export {default as AttachFileIcon} from './attach_file.svg';
 export {default as SendIcon} from './send.svg';
+export {default as PasswordVisibilityOffIcon} from './visibility_off.svg';
+export {default as PasswordVisibilityOnIcon} from './visibility_off.svg';
+
 
 
 
