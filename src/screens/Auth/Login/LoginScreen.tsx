@@ -1,10 +1,10 @@
 import { Alert, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
-import InputBox from '../../Elements/InputBox';
-import Button from '../../Elements/Button';
-import SocialButton from '../../Elements/SocialButton';
+import InputBox from '../../../Elements/InputBox';
+import Button from '../../../Elements/Button';
+import SocialButton from '../../../Elements/SocialButton';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../App';
+import { RootStackParamList } from '../../../App';
 
 type LoginProps = NativeStackScreenProps<RootStackParamList,"Login">
 

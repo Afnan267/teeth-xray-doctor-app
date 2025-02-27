@@ -1,14 +1,15 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 
  import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Home from './screens/Home'
 import Details from './screens/Details'
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import RegistrationScreen from './Containers/Auth/RegistrationScreen'
-import LoginScreen from './Containers/Auth/LoginScreen'
+import RegistrationScreen from './screens/Auth/Registration/RegistrationScreen'
+import LoginScreen from './screens/Auth/Login/LoginScreen'
 import HomeScreen from './Containers/Home/HomeScreen'
+import { configureGoogleSignIn } from './api/authService'
 
 export type RootStackParamList = {
   Home : undefined;
@@ -22,6 +23,10 @@ export type RootStackParamList = {
 const Stack = createNativeStackNavigator<RootStackParamList>()
 
 const App = () => {
+  useEffect(() => {
+    configureGoogleSignIn();
+  }, []);
+
   return (
     <SafeAreaProvider>
       <NavigationContainer>
