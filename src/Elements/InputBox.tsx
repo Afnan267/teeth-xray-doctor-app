@@ -11,6 +11,7 @@ import {
   PasswordVisibilityOffIcon,
   PasswordVisibilityOnIcon,
 } from '../Assets/Svg';
+import ErrorText from './ErrorText';
 
 interface InputBoxProps {
   placeholder?: string;
@@ -19,7 +20,8 @@ interface InputBoxProps {
   secureTextEntry?: boolean;
   onTogglePassword?: () => void;
   isPassword?: boolean;
-}
+  errorMessage?: string; 
+ }
 
 const InputBox: React.FC<InputBoxProps> = ({
   placeholder,
@@ -28,38 +30,69 @@ const InputBox: React.FC<InputBoxProps> = ({
   secureTextEntry = false,
   onTogglePassword,
   isPassword = false,
-}) => {
+  errorMessage,
+ }) => {
   return (
+    // <View style={styles.container}>
+    //   <TextInput
+    //     placeholder={placeholder}
+    //     value={value}
+    //     onChangeText={onChangeText}
+    //     placeholderTextColor="#787878"
+    //     style={styles.input}
+    //     secureTextEntry={secureTextEntry}
+    //   />
+    //   {isPassword && (
+    //     <TouchableOpacity onPress={onTogglePassword}>
+    //       {secureTextEntry ? (
+    //         <PasswordVisibilityOffIcon />
+    //       ) : (
+    //         <PasswordVisibilityOnIcon />
+    //       )}
+    //     </TouchableOpacity>
+    //   )}
+    // </View>
+
     <View style={styles.container}>
-      <TextInput
-        placeholder={placeholder}
-        value={value}
-        onChangeText={onChangeText}
-        placeholderTextColor="#787878"
-        style={styles.input}
-        secureTextEntry={secureTextEntry}
-      />
-      {isPassword && (
-        <TouchableOpacity onPress={onTogglePassword}>
-          {secureTextEntry ? (
-            <PasswordVisibilityOffIcon />
-          ) : (
-            <PasswordVisibilityOnIcon />
-          )}
-        </TouchableOpacity>
-      )}
+      <View style={[styles.inputContainer, errorMessage && styles.inputError]}>
+        <TextInput
+          placeholder={placeholder}
+          value={value}
+          onChangeText={onChangeText}
+          placeholderTextColor="#787878"
+          style={styles.input}
+          secureTextEntry={secureTextEntry}
+        />
+        {isPassword && (
+          <TouchableOpacity onPress={onTogglePassword}>
+            {secureTextEntry ? <PasswordVisibilityOffIcon /> : <PasswordVisibilityOnIcon />}
+          </TouchableOpacity>
+        )}
+      </View>
+      {errorMessage && <ErrorText message={errorMessage} />}
     </View>
+
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  inputContainer: {
     flexDirection: 'row',
     paddingHorizontal: 25,
     paddingVertical: 19,
     backgroundColor: '#ffffff',
     borderRadius: 17,
   },
+
+ container: {
+    marginBottom: 12, // Add spacing for error message
+  },
+  
+  inputError: {
+    borderColor: 'red',
+    borderWidth: 1, // Highlight border on error
+  },
+
   input: {
     flex: 1,
     fontSize: 15,
