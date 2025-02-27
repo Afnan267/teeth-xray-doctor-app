@@ -1,5 +1,4 @@
 import {
-  Alert,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -11,12 +10,6 @@ import InputBox from '../../../Elements/InputBox';
 import Button from '../../../Elements/Button';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../../App';
-import {
-  GoogleSignin,
-  isErrorWithCode,
-  isSuccessResponse,
-  statusCodes,
-} from '@react-native-google-signin/google-signin';
 import styles from './styles';
 import {validateForm} from '../../../utils/validateForm';
 import TermsCheckbox from '../../../components/TermsCheckbox';
@@ -48,6 +41,7 @@ const RegistrationScreen = ({navigation}: RegistrationProps) => {
     const userData = await signInWithGoogle();
     if (userData) {
       console.log('Signed in user:', userData);
+      navigation.navigate('HomeScreen');
       // You can now store user globally (e.g., Redux) or navigate
     }
   };
