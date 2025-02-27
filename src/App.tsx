@@ -1,26 +1,26 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React, { useEffect } from 'react'
+import {StyleSheet, Text, View} from 'react-native';
+import React, {useEffect} from 'react';
 
- import { NavigationContainer } from '@react-navigation/native'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import Home from './screens/Home'
-import Details from './screens/Details'
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import RegistrationScreen from './screens/Auth/Registration/RegistrationScreen'
-import LoginScreen from './screens/Auth/Login/LoginScreen'
-import HomeScreen from './Containers/Home/HomeScreen'
-import { configureGoogleSignIn } from './api/authService'
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import Home from './screens/Home';
+import Details from './screens/Details';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+import RegistrationScreen from './screens/Auth/Registration/RegistrationScreen';
+import LoginScreen from './screens/Auth/Login/LoginScreen';
+import HomeScreen from './Containers/Home/HomeScreen';
+import {configureGoogleSignIn} from './api/authService';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 export type RootStackParamList = {
-  Home : undefined;
-  Registration : undefined;
-  Login : undefined;
-  HomeScreen : undefined;
-  Details : {product : Product}
+  Home: undefined;
+  Registration: undefined;
+  Login: undefined;
+  HomeScreen: undefined;
+  Details: {product: Product};
+};
 
-}
-
-const Stack = createNativeStackNavigator<RootStackParamList>()
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const App = () => {
   useEffect(() => {
@@ -28,33 +28,30 @@ const App = () => {
   }, []);
 
   return (
-    <SafeAreaProvider>
-      <NavigationContainer>
-        <Stack.Navigator 
-          initialRouteName='Registration'
-          screenOptions={{
-            gestureEnabled: true,   // Enable swipe-back gesture
-            gestureDirection: 'horizontal',  // Set swipe direction
-          }}>
+    <GestureHandlerRootView style={{flex: 1}}>
+      <SafeAreaProvider>
+        <NavigationContainer>
+          <Stack.Navigator
+            initialRouteName="Registration"
+            screenOptions={{
+              gestureEnabled: true, // Enable swipe-back gesture
+              gestureDirection: 'horizontal', // Set swipe direction
+            }}>
+            <Stack.Screen
+              name="Registration"
+              component={RegistrationScreen}
+              options={{headerShown: false}}></Stack.Screen>
 
-         <Stack.Screen 
-            name='Registration'
-            component={RegistrationScreen}
-            options={{ headerShown: false }}>
-         </Stack.Screen>
+            <Stack.Screen
+              name="Login"
+              component={LoginScreen}
+              options={{headerShown: false}}></Stack.Screen>
 
-         <Stack.Screen 
-            name='Login'
-            component={LoginScreen}
-            options={{ headerShown: false }}>
-         </Stack.Screen>
-
-          <Stack.Screen 
-            name='HomeScreen'
-            component={HomeScreen}
-            options={{ headerShown: false }}>
-         </Stack.Screen>
-{/* <Stack.Screen name='Home'
+            <Stack.Screen
+              name="HomeScreen"
+              component={HomeScreen}
+              options={{headerShown: false}}></Stack.Screen>
+            {/* <Stack.Screen name='Home'
           component={Home}
             options={{
             title:"Trending Products"
@@ -65,11 +62,11 @@ const App = () => {
       options={{
          title:"Product Details"
       }}></Stack.Screen> */}
-
-      </Stack.Navigator>
-      </NavigationContainer>
-    </SafeAreaProvider>
+          </Stack.Navigator>
+        </NavigationContainer>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
-}
+};
 
-export default App
+export default App;
