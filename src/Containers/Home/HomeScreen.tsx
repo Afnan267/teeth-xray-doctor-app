@@ -7,8 +7,12 @@ import AiViewerDetail from '../../components/AiViewerDetail';
 import ImageUploaderView from '../../components/ImageUploaderView';
 import HomeBottomContainer from '../../components/HomeBottomContainer';
 import ChatBotModal from '../../components/modal/ChatBotModal';
+import {RootStackParamList} from '../../App';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
-const HomeScreen = () => {
+type HomeScreenProps = NativeStackScreenProps<RootStackParamList, 'HomeScreen'>;
+
+const HomeScreen = ({navigation}: HomeScreenProps) => {
   const [aiViewerVisible, setAiViewerVisible] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
@@ -33,7 +37,7 @@ const HomeScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={{flex: 1, flexDirection: 'column'}}>
-        <UserProfileHeader />
+        <UserProfileHeader navigation={navigation} />
         <View style={styles.dropDownRadioAiViewerContainer}>
           <PathologyDropdown
             style={styles.customDropdownStyle}

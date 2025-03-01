@@ -1,5 +1,8 @@
 import {
+  ActivityIndicator,
+  Alert,
   KeyboardAvoidingView,
+  Modal,
   Platform,
   Pressable,
   Text,
@@ -16,7 +19,8 @@ import TermsCheckbox from '../../../components/TermsCheckbox';
 import SocialAuthButtons from '../../../components/SocialAuthButtons';
 import {GestureHandlerRootView, ScrollView} from 'react-native-gesture-handler';
 import Spacer from '../../../Elements/Spacer';
-import {useAuth} from '../../../hooks/useAuth';
+import {useGoogleLogin} from '../../../hooks/useGoogleLogin';
+import {useSignUpWithEmail} from '../../../hooks/useEmailAuth/useSignUpWithEmail';
 
 type RegistrationProps = NativeStackScreenProps<
   RootStackParamList,
@@ -35,7 +39,9 @@ const RegistrationScreen = ({navigation}: RegistrationProps) => {
 
   const [isSelected, setIsSelected] = useState(false);
 
-  const {user, loading, signInWithGoogle} = useAuth();
+  const {user, loading, signInWithGoogle} = useGoogleLogin();
+
+  const {signUpWithEmail, loadingSignUpWithEmail, error} = useSignUpWithEmail();
 
   const onGoogleSignPress = async () => {
     const userData = await signInWithGoogle();
@@ -52,10 +58,18 @@ const RegistrationScreen = ({navigation}: RegistrationProps) => {
     setErrors(prev => ({...prev, [key]: ''}));
   };
 
-  const handlePress = () => {
+  const createAccount = async () => {
     const {isValid, errors} = validateForm(form, isSelected);
     setErrors(errors);
-    if (isValid) navigation.navigate('Login');
+    if (isValid) {
+      // navigation.navigate('Login');
+      await signUpWithEmail(form.email, form.password);
+      if (error) {
+        Alert.alert('Signup Failed', error, [{text: 'OK'}]);
+      } else {
+        navigation.navigate('HomeScreen');
+      }
+    }
   };
 
   const toggleSelection = () => {
@@ -69,6 +83,17 @@ const RegistrationScreen = ({navigation}: RegistrationProps) => {
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       style={styles.container}>
+      <Modal transparent visible={loadingSignUpWithEmail}>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: 'rgba(0,0,0,0.5)',
+          }}>
+          <ActivityIndicator size="large" color="#fff" />
+        </View>
+      </Modal>
       <ScrollView
         contentContainerStyle={{flexGrow: 1, paddingBottom: 40}}
         keyboardShouldPersistTaps="handled"
@@ -122,7 +147,7 @@ const RegistrationScreen = ({navigation}: RegistrationProps) => {
         <Spacer height={44} />
         <Button
           text="Create Account"
-          onPress={handlePress}
+          onPress={createAccount}
           textColor="#FFFFFF"></Button>
 
         <Text style={styles.orText}>Or</Text>
