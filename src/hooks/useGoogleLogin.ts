@@ -6,7 +6,7 @@ import {
     statusCodes,
 } from '@react-native-google-signin/google-signin';
 
-export const useAuth = () => {
+export const useGoogleLogin = () => {
     const [user, setUser] = useState<any>(null);
     const [loading, setLoading] = useState(false);
 
