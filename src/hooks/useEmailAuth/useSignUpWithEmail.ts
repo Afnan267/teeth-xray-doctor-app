@@ -18,5 +18,5 @@ export const useSignUpWithEmail = () => {
         }
     };
 
-    return { signUpWithEmail, loadingSignUpWithEmail,error };
+    return { signUpWithEmail, loadingSignUpWithEmail, error };
 }

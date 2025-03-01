@@ -1,200 +1,159 @@
-import { Alert, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import {
+  ActivityIndicator,
+  Alert,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import React, {useState} from 'react';
 import InputBox from '../../../Elements/InputBox';
 import Button from '../../../Elements/Button';
 import SocialButton from '../../../Elements/SocialButton';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../../App';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../../../App';
+import styles from './styles';
+import {validateLoginForm} from '../../../utils/validateLoginForm';
+import {useLoginWithEmail} from '../../../hooks/useEmailAuth/useLoginWithEmail';
+import {ScrollView} from 'react-native-gesture-handler';
 
-type LoginProps = NativeStackScreenProps<RootStackParamList,"Login">
+type LoginProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
-
-const LoginScreen = ({navigation} : LoginProps) => {
-
-  const [text, setText] = useState('');
+const LoginScreen = ({navigation}: LoginProps) => {
+  const [form, setForm] = useState({email: '', password: ''});
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSelected, setIsSelected] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', password: '' });
-  const [isAgreed, setIsAgreed] = useState(false);
+  const {loginWithEmail, loadingLoginWithEmail, error} = useLoginWithEmail();
 
-  const handleChange = (key : keyof typeof form, value : string) => {
-    setForm({ ...form, [key]: value });
+  const handleChange = (key: keyof typeof form, value: string) => {
+    setForm(prev => ({...prev, [key]: value}));
+    setErrors(prev => ({...prev, [key]: ''})); // Clear the error when user types
   };
 
   const toggleSelection = () => {
     setIsSelected(!isSelected);
   };
 
-  const handlePress = () => {
-   navigation.navigate('HomeScreen')
+  const handleLogin = async () => {
+    const {isValid, errors} = validateLoginForm(form);
+    setErrors(errors);
+
+    if (isValid) {
+      const success = await loginWithEmail(form.email, form.password);
+      if (!success) {
+        Alert.alert('Login Failed', error ?? 'An unknown error occurred', [
+          {text: 'OK'},
+        ]);
+        return;
+      }
+
+      navigation.navigate('HomeScreen');
+
+      // await loginWithEmail(form.email, form.password);
+      // if (error) {
+      //   Alert.alert('Login Failed', error, [{text: 'OK'}]);
+      // } else {
+      //   navigation.navigate('HomeScreen');
+      // }
+    }
   };
 
   return (
-    <View style = {styles.container}>
-      
-      <Text style = {styles.nameTitle}>Welcome Back</Text>
-      
-      <Text style = {styles.nameSubTitle}>Please enter your details to sign in</Text>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      style={styles.container}>
+      <Modal transparent visible={loadingLoginWithEmail}>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: 'rgba(0,0,0,0.5)',
+          }}>
+          <ActivityIndicator size="large" color="#fff" />
+        </View>
+      </Modal>
+      <ScrollView
+        contentContainerStyle={{flexGrow: 1, paddingBottom: 40}}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}>
+        <Text style={styles.nameTitle}>Welcome Back</Text>
 
-      <View style = {styles.InputBoxFirst}>
-        <InputBox
-          placeholder='Email'
-          value={form.email}
-          onChangeText={value => handleChange('email', value)}
-        />
-      </View>
-      <View style = {styles.InputBox}>
-        <InputBox
-          placeholder='Enter your password'
-          value={form.password}
-          onChangeText={value => handleChange('password', value)}
-        />
-      </View>
+        <Text style={styles.nameSubTitle}>
+          Please enter your details to sign in
+        </Text>
 
-      <View style = {styles.RememberMeText}>
-      
-      <TouchableOpacity onPress={toggleSelection} style={styles.radioContainer}>
-      <View style={[styles.radioButton, isSelected && styles.radioButtonSelected]} />
-        <Text style = {styles.termsAndConditions}>Remember me</Text>
-      </TouchableOpacity>
+        <View style={styles.InputBoxFirst}>
+          <InputBox
+            placeholder="Email"
+            value={form.email}
+            onChangeText={value => handleChange('email', value)}
+            errorMessage={errors.email}
+          />
+        </View>
+        <View style={styles.InputBox}>
+          <InputBox
+            placeholder="Enter your password"
+            value={form.password}
+            onChangeText={value => handleChange('password', value)}
+            isPassword={true} // Pass as password field
+            onTogglePassword={() => setShowPassword(!showPassword)} // Toggle function
+            secureTextEntry={!showPassword}
+            errorMessage={errors.password}
+          />
+        </View>
 
-      <Text style = {styles.logInTitle}>Forget password</Text>
+        <View style={styles.RememberMeText}>
+          <TouchableOpacity
+            onPress={toggleSelection}
+            style={styles.radioContainer}>
+            <View
+              style={[
+                styles.radioButton,
+                isSelected && styles.radioButtonSelected,
+              ]}
+            />
+            <Text style={styles.termsAndConditions}>Remember me</Text>
+          </TouchableOpacity>
 
-      </View>
+          <Text style={styles.logInTitle}>Forget password</Text>
+        </View>
 
-      <View style = {styles.Button}>
-        <Button
-          text='Sign in'
-          onPress={handlePress} 
-          textColor="#FFFFFF" >
-        </Button>
-      </View>
-     
-         <View style={styles.signupContainer}>
-              <Text style={styles.nameSubTitle}>Already have an account? </Text>
-              <Pressable onPress={() => navigation.popTo('Registration')}>
-                <Text style={styles.signupTitle}>Sign up</Text>
-              </Pressable>
-            </View>
+        <View style={styles.Button}>
+          <Button
+            text="Sign in"
+            onPress={handleLogin}
+            textColor="#FFFFFF"></Button>
+        </View>
 
+        <View style={styles.signupContainer}>
+          <Text style={styles.nameSubTitle}>Already have an account? </Text>
+          <Pressable onPress={() => navigation.popTo('Registration')}>
+            <Text style={styles.signupTitle}>Sign up</Text>
+          </Pressable>
+        </View>
 
-      <View style = {styles.SocialButton}>
-        <SocialButton
-          src='google'
-          onPress={handlePress} 
-          backgroundColor="#FFFFFF" >
-        </SocialButton>
-        <View style = {styles.horizontalSpace}></View>
-        <SocialButton
-          src='apple'
-          onPress={handlePress} 
-          backgroundColor="#FFFFFF" >
-        </SocialButton>
-      </View>
+        <View style={styles.SocialButton}>
+          <SocialButton
+            src="google"
+            onPress={() => {}}
+            backgroundColor="#FFFFFF"></SocialButton>
+          <View style={styles.horizontalSpace}></View>
+          <SocialButton
+            src="apple"
+            onPress={() => {}}
+            backgroundColor="#FFFFFF"></SocialButton>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
+  );
+};
 
-    </View>
-  )
-}
-
-const styles = StyleSheet.create({
-  signupContainer: {
-    marginTop: 30,
-    flexDirection: 'row',
-    alignItems: 'center',  // Keeps both texts vertically aligned
-    alignSelf: 'center', 
-  },
-  Button: {
-    marginTop:44,
-  },
-  RememberMeText: {
-    marginTop:35,
-    flexDirection: 'row',       // Arrange items horizontally
-    justifyContent: 'space-between', // Add space between buttons
-  },
-  SocialButton: {
-    marginTop:30,
-    flexDirection: 'row',       // Arrange items horizontally
-    justifyContent: 'space-between', // Add space between buttons
-  },
-  InputBoxFirst: {
-    marginTop:66,
-    },
-  InputBox: {
-      marginTop:10,
-    },
-  container: {
-        paddingHorizontal: 33,
-        flex: 1,
-        backgroundColor: '#f9f9ff',
-    },
-    nameTitle: {
-        color: '#787878',
-        justifyContent: 'center',
-        fontSize: 32,
-        fontWeight: '500',
-        fontFamily: 'Poppins-Bold',
-        marginBottom: 9,
-        marginTop:109
-      },
-    nameSubTitle: {
-        color: '#787878',
-        justifyContent: 'center',
-        fontSize: 15,
-        fontWeight: '400',
-        fontFamily: 'Poppins-Regular'
-      },
-    logInTitle: {
-        color: '#178CF7',
-        fontSize: 15,
-        fontWeight: '400',
-        fontFamily: 'Poppins-Regular'
-      },
-      signupTitle: {
-        color: '#787878',
-        fontSize: 15,
-        fontWeight: '700',
-        fontFamily: 'Poppins-Bold'
-      },
-      termsAndConditions: {
-        color: '#787878',
-        justifyContent: 'center',
-        fontSize: 15,
-        fontWeight: '400',
-        fontFamily: 'Poppins-Regular',
-        // marginTop: 31
-      },
-      orText: {
-        color: '#787878',
-        fontSize: 15,
-        fontWeight: '400',
-        fontFamily: 'Poppins-Regular',
-        marginTop: 11,
-        textAlign: 'center',   
-        alignSelf: 'center',  
-      },
-      radioContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-      },
-      radioButton: {
-        height: 15,
-        width: 15,
-        borderRadius: 10,
-        borderWidth: 2,
-        borderColor: '#555',
-        marginRight: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
-        // marginTop: 31
-      },
-      radioButtonSelected: {
-        backgroundColor: '#007BFF',
-        borderColor: '#007BFF',
-      },
-      horizontalSpace: {
-        width: 18
-      },
-  });
-
-
-export default LoginScreen
+export default LoginScreen;

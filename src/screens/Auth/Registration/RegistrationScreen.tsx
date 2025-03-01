@@ -62,7 +62,6 @@ const RegistrationScreen = ({navigation}: RegistrationProps) => {
     const {isValid, errors} = validateForm(form, isSelected);
     setErrors(errors);
     if (isValid) {
-      // navigation.navigate('Login');
       await signUpWithEmail(form.email, form.password);
       if (error) {
         Alert.alert('Signup Failed', error, [{text: 'OK'}]);
