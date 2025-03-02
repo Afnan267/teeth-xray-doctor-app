@@ -5,5 +5,7 @@ export const images = {
     xRayImage1: require('../Images/x_ray.png'),
     xRayImage2: require('../Images/x_ray_2.png'),
     xRayImage3: require('../Images/x_ray_3.png'),
+    splashBg: require('../Images/splash_bg.png'),
+    splashIcon: require('../Images/splash_icon.png'),
 
    };

@@ -12,8 +12,7 @@ import React, {useEffect, useState} from 'react';
 import InputBox from '../../../Elements/InputBox';
 import Button from '../../../Elements/Button';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../../../App';
-import styles from './styles';
+ import styles from './styles';
 import {validateForm} from '../../../utils/validateForm';
 import TermsCheckbox from '../../../components/TermsCheckbox';
 import SocialAuthButtons from '../../../components/SocialAuthButtons';
@@ -21,6 +20,7 @@ import {GestureHandlerRootView, ScrollView} from 'react-native-gesture-handler';
 import Spacer from '../../../Elements/Spacer';
 import {useGoogleLogin} from '../../../hooks/useGoogleLogin';
 import {useSignUpWithEmail} from '../../../hooks/useEmailAuth/useSignUpWithEmail';
+import { RootStackParamList } from '../../../types/navigation';
 
 type RegistrationProps = NativeStackScreenProps<
   RootStackParamList,

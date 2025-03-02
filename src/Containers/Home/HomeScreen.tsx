@@ -7,8 +7,8 @@ import AiViewerDetail from '../../components/AiViewerDetail';
 import ImageUploaderView from '../../components/ImageUploaderView';
 import HomeBottomContainer from '../../components/HomeBottomContainer';
 import ChatBotModal from '../../components/modal/ChatBotModal';
-import {RootStackParamList} from '../../App';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+ import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../types/navigation';
 
 type HomeScreenProps = NativeStackScreenProps<RootStackParamList, 'HomeScreen'>;
 

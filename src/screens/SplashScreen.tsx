@@ -1,8 +1,16 @@
-import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Image,
+  ImageBackground,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../App';
 import {useAuth} from '../contexts/AuthContext';
+import {RootStackParamList} from '../types/navigation';
+import {images} from '../Assets/Images';
 
 type SplashScreenProps = NativeStackScreenProps<
   RootStackParamList,
@@ -23,22 +31,32 @@ const SplashScreen = ({navigation}: SplashScreenProps) => {
   useEffect(() => {
     if (initializing && !fallbackTimeoutReached) return;
     const timer = setTimeout(() => {
-      user ? navigation.navigate('HomeScreen') : navigation.navigate('Login');
+      navigation.reset({
+        index: 0,
+        routes: [{name: user ? 'HomeScreen' : 'Login'}], // Clears stack
+      });
     }, 2000);
     return () => clearTimeout(timer);
   }, [user, initializing, fallbackTimeoutReached]);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.splashTitle}>SplashScreen</Text>
-      <ActivityIndicator style={styles.loader} size="large" color="#0000ff" />
-    </View>
+    <ImageBackground source={images['splashBg']} style={styles.background}>
+      <Image source={images['splashIcon']} style={{height: 38, width: 204}} />
+    </ImageBackground>
   );
 };
 
 export default SplashScreen;
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    justifyContent: 'center', // Centers content vertically
+    alignItems: 'center', // Centers content horizontally
+    width: '100%', // Ensures it covers full width
+    height: '100%', // Ensures it covers full height
+    resizeMode: 'cover', // Keeps aspect ratio and fills screen
+  },
   container: {
     flex: 1,
     justifyContent: 'center', // Centers content vertically

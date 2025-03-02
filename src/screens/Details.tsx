@@ -1,7 +1,7 @@
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
-import { RootStackParamList } from '../App'
+import { RootStackParamList } from '../types/navigation'
 
 type DetailsProps = NativeStackScreenProps<RootStackParamList,"Details">
 

@@ -1,6 +1,7 @@
 import {
   ActivityIndicator,
   Alert,
+  BackHandler,
   KeyboardAvoidingView,
   Modal,
   Platform,
@@ -11,16 +12,18 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import InputBox from '../../../Elements/InputBox';
 import Button from '../../../Elements/Button';
 import SocialButton from '../../../Elements/SocialButton';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../../../App';
 import styles from './styles';
 import {validateLoginForm} from '../../../utils/validateLoginForm';
 import {useLoginWithEmail} from '../../../hooks/useEmailAuth/useLoginWithEmail';
 import {ScrollView} from 'react-native-gesture-handler';
+import {useGoogleLogin} from '../../../hooks/useGoogleLogin';
+import SocialAuthButtons from '../../../components/SocialAuthButtons';
+import { RootStackParamList } from '../../../types/navigation';
 
 type LoginProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
@@ -31,6 +34,7 @@ const LoginScreen = ({navigation}: LoginProps) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const {loginWithEmail, loadingLoginWithEmail, error} = useLoginWithEmail();
+  const {user, loading, signInWithGoogle} = useGoogleLogin();
 
   const handleChange = (key: keyof typeof form, value: string) => {
     setForm(prev => ({...prev, [key]: value}));
@@ -57,6 +61,32 @@ const LoginScreen = ({navigation}: LoginProps) => {
       navigation.navigate('HomeScreen');
     }
   };
+
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert('Exit App', 'Do you want to exit?', [
+        {text: 'Cancel', style: 'cancel'},
+        {text: 'Exit', onPress: () => BackHandler.exitApp()},
+      ]);
+      return true; // Prevent default back action
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove(); // Cleanup
+  }, []);
+
+  const onGoogleSignPress = async () => {
+    const userData = await signInWithGoogle();
+    if (userData) {
+      console.log('Signed in user:', userData);
+      navigation.navigate('HomeScreen');
+    }
+  };
+  const onAppleSignPress = () => {};
 
   return (
     <KeyboardAvoidingView
@@ -116,7 +146,9 @@ const LoginScreen = ({navigation}: LoginProps) => {
             <Text style={styles.termsAndConditions}>Remember me</Text>
           </TouchableOpacity>
 
-          <Text style={styles.logInTitle}>Forget password</Text>
+          <Pressable onPress={() => navigation.popTo('ForgotPassword')}>
+            <Text style={styles.logInTitle}>Forget password</Text>
+          </Pressable>
         </View>
 
         <View style={styles.Button}>
@@ -133,17 +165,10 @@ const LoginScreen = ({navigation}: LoginProps) => {
           </Pressable>
         </View>
 
-        <View style={styles.SocialButton}>
-          <SocialButton
-            src="google"
-            onPress={() => {}}
-            backgroundColor="#FFFFFF"></SocialButton>
-          <View style={styles.horizontalSpace}></View>
-          <SocialButton
-            src="apple"
-            onPress={() => {}}
-            backgroundColor="#FFFFFF"></SocialButton>
-        </View>
+        <SocialAuthButtons
+          onGooglePress={() => onGoogleSignPress()}
+          onApplePress={() => onAppleSignPress()}
+        />
       </ScrollView>
     </KeyboardAvoidingView>
   );
