@@ -55,13 +55,6 @@ const LoginScreen = ({navigation}: LoginProps) => {
       }
 
       navigation.navigate('HomeScreen');
-
-      // await loginWithEmail(form.email, form.password);
-      // if (error) {
-      //   Alert.alert('Login Failed', error, [{text: 'OK'}]);
-      // } else {
-      //   navigation.navigate('HomeScreen');
-      // }
     }
   };
 
